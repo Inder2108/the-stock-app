@@ -1,5 +1,6 @@
 from flask import Flask, request, jsonify
 from flask_cors import CORS
+from datetime import datetime, timedelta
 import yfinance as yf
 import pandas as pd
 import json
@@ -26,7 +27,7 @@ def save_data(data):
 @app.route('/stock/<ticker>', methods=['GET'])
 def get_stock_info(ticker):
     stock = yf.Ticker(ticker)
-    hist = stock.history(period="2y", interval="1wk")
+    hist = stock.history(period="2y", interval="1wk") 
     if hist.empty:
         return jsonify({'error': 'No data found for ticker'}), 404
 
@@ -41,6 +42,36 @@ def get_stock_info(ticker):
     # pe_ratio = info.get("trailingPE") or current_price / trailing_eps
     pe_ratio = info.get("trailingPE")
 
+    # EMAs list
+    # # Calculate start date (need extra weeks for EMA calculation)
+    # start_date = datetime.now() - timedelta(weeks=102)
+    # # Fetch weekly data directly
+    # data = yf.download(ticker, start=start_date, interval='1wk', progress=False)
+    
+    # # Calculate EMAs on weekly close prices
+    # data['EMA_10w'] = data['Close'].ewm(span=10, adjust=False).mean()
+    # data['EMA_20w'] = data['Close'].ewm(span=20, adjust=False).mean() 
+    # data['EMA_40w'] = data['Close'].ewm(span=40, adjust=False).mean()
+    
+    # # Get last N weeks and format as API response
+    # recent_data = data.tail(52)
+    
+    # weekly_emas_array = []
+    # for date, row in recent_data.iterrows():
+    #     if row.empty:
+    #         print("Series is empty")
+    #     else:
+    #         week_data = {
+    #             "date": date.strftime('%Y-%m-%d'),
+    #             "close": round(float(row['Close']), 2),
+    #             "ema_10w": round(float(row['EMA_10w']), 2) if pd.notna(row['EMA_10w']) else None,
+    #             "ema_20w": round(float(row['EMA_20w']), 2) if pd.notna(row['EMA_20w']) else None,
+    #             "ema_40w": round(float(row['EMA_40w']), 2) if pd.notna(row['EMA_40w']) else None,
+    #         }
+    #         weekly_emas_array.append(week_data)
+    print("__")
+    print(hist)
+    print("__")
     return jsonify({
         "ticker": ticker.upper(),
         "price": current_price,
@@ -48,6 +79,7 @@ def get_stock_info(ticker):
         "ema_10w": round(ema_10, 2),
         "ema_20w": round(ema_20, 2),
         "ema_40w": round(ema_40, 2)
+        # "weekly_emas_array": weekly_emas_array
     })
 
 @app.route('/add-stock', methods=['POST'])
