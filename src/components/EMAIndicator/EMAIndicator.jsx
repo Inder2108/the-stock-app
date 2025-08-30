@@ -2,9 +2,9 @@
 import React from 'react';
 import { Box, Flex, Text, VStack, HStack } from '@chakra-ui/react';
 
-const EMAIndicator = ({ ema10 = 30, ema20 = 20, ema30 = 10, currentPrice = 25 }) => {
+const EMAIndicator = ({ ema10 = 30, ema20 = 20, ema40 = 10, currentPrice = 25 }) => {
     // Calculate the range and positions
-    const values = [ema10, ema20, ema30, currentPrice];
+    const values = [ema10, ema20, ema40, currentPrice];
     const minValue = Math.min(...values) * 0.98; // Add some padding
     const maxValue = Math.max(...values) * 1.02; // Add some padding
     const range = maxValue - minValue;
@@ -14,14 +14,14 @@ const EMAIndicator = ({ ema10 = 30, ema20 = 20, ema30 = 10, currentPrice = 25 })
 
     const ema10Position = getPosition(ema10);
     const ema20Position = getPosition(ema20);
-    const ema30Position = getPosition(ema30);
+    const ema40Position = getPosition(ema40);
     const currentPricePosition = getPosition(currentPrice);
 
     // EMA data for labels
     const emaData = [
         { value: ema10, position: ema10Position, label: '10w EMA', color: 'purple.500' },
         { value: ema20, position: ema20Position, label: '20w EMA', color: 'purple.400' },
-        { value: ema30, position: ema30Position, label: '30w EMA', color: 'purple.300' }
+        { value: ema40, position: ema40Position, label: '40w EMA', color: 'purple.300' }
     ];
 
     return (

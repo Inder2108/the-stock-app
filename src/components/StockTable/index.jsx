@@ -37,15 +37,6 @@ const StockTable = ({ }) => {
                     Price
                 </Table.ColumnHeader>
                 <Table.ColumnHeader color="gray.100" fontWeight="semibold">
-                    10W EMA
-                </Table.ColumnHeader>
-                <Table.ColumnHeader color="gray.100" fontWeight="semibold">
-                    20W EMA
-                </Table.ColumnHeader>
-                <Table.ColumnHeader color="gray.100" fontWeight="semibold">
-                    40W EMA
-                </Table.ColumnHeader>
-                <Table.ColumnHeader color="gray.100" fontWeight="semibold">
                     PE
                 </Table.ColumnHeader>
                 <Table.ColumnHeader color="gray.100" fontWeight="semibold">
@@ -62,6 +53,9 @@ const StockTable = ({ }) => {
                 </Table.ColumnHeader>
                 <Table.ColumnHeader color="gray.100" fontWeight="semibold">
                     Profit/Loss(%)
+                </Table.ColumnHeader>
+                <Table.ColumnHeader color="gray.100" fontWeight="semibold">
+                    EMA Indicators
                 </Table.ColumnHeader>
                 <Table.ColumnHeader color="gray.100" fontWeight="semibold">
                     Actions
@@ -96,15 +90,6 @@ const StockTable = ({ }) => {
                         <Table.Cell color="gray.300">
                             {numberRender(row.current_price)}
                         </Table.Cell>
-                        <Table.Cell color="gray.300">
-                            {row.ema_10w}
-                        </Table.Cell>
-                        <Table.Cell color="gray.300">
-                            {row.ema_20w}
-                        </Table.Cell>
-                        <Table.Cell color="gray.300">
-                            {row.ema_40w}
-                        </Table.Cell>
                         <Table.Cell color="gray.200">
                             {numberRender(row.pe_ratio, true)}
                         </Table.Cell>
@@ -123,18 +108,20 @@ const StockTable = ({ }) => {
                         <Table.Cell color={row.profit_loss && row.profit_loss > 0 ? "green.400" : "red.400"}>
                             {numberRender(row.profit_loss_percent, true, true)}
                         </Table.Cell>
+                        <Table.Cell color="gray.300">
+                            {!row.isLastRow && <EMAIndicator ema10={row.ema_10w} ema20={row.ema_20w} ema40={row.ema_40w} currentPrice={row.current_price} />}
+                        </Table.Cell>
                         <Table.Cell color="gray.200">
-                            {/* <i onCLick={() => {
+                            {!row.isLastRow && <div><i onCLick={() => {
 
                             }} class="bi bi-plus-circle" style={{ color: "green", cursor: "pointer", fontSize: "1.5rem" }}></i>
-                            <i onCLick={() => {
+                                <i onCLick={() => {
 
-                            }} class="bi bi-dash-circle" style={{ color: "gray", cursor: "pointer", fontSize: "1.5rem", paddingLeft: "5px" }}></i>
-                            <i onCLick={() => {
+                                }} class="bi bi-dash-circle" style={{ color: "gray", cursor: "pointer", fontSize: "1.5rem", paddingLeft: "5px" }}></i>
+                                <i onCLick={() => {
 
-                            }} class="bi bi-x-circle" style={{ color: "red", cursor: "pointer", fontSize: "1.5rem", paddingLeft: "5px" }}></i>
-                              */}
-                              <EMAIndicator />
+                                }} class="bi bi-x-circle" style={{ color: "red", cursor: "pointer", fontSize: "1.5rem", paddingLeft: "5px" }}></i></div>
+                            }
                         </Table.Cell>
                     </Table.Row>
                 ))

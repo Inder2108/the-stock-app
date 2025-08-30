@@ -7,9 +7,10 @@ export const AppContextProvider = ({ children }) => {
     const [form, setForm] = useState({ ticker: '', qty: '', avgPrice: '' });
     const [loading, setLoading] = useState(false);
     const [isOpen, setIsOpen] = useState(false);
+    const [isEdit, setIsEdit] = useState(false);
 
     return (
-        <AppContext.Provider value={{ rows, form, loading, isOpen, setRows, setForm, setLoading, setIsOpen }}>
+        <AppContext.Provider value={{ rows, form, loading, isOpen, isEdit, setRows, setForm, setLoading, setIsOpen, setIsEdit }}>
             {children}
         </AppContext.Provider>
     );

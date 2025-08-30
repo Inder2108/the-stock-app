@@ -2,8 +2,8 @@ import { Button, Drawer, Field, Flex, Input, VStack } from "@chakra-ui/react";
 import React, { useContext } from "react";
 import { AppContext } from "../../AppContext";
 
-const AddNewStockDrawer = () => {
-    const { isOpen, form, setForm, setIsOpen } = useContext(AppContext);
+const StockAddEditForm = () => {
+    const { isOpen, isEdit, form, setForm, setIsOpen } = useContext(AppContext);
 
     const handleChange = (e) => {
         setForm({ ...form, [e.target.name]: e.target.value });
@@ -13,6 +13,30 @@ const AddNewStockDrawer = () => {
         setForm({ ticker: '', qty: '', avgPrice: '' });
         setIsOpen(false)
     };
+
+    const handleSave = async () => {
+        if (!form.ticker || !form.qty || !form.avgPrice) {
+            return;
+        }
+
+        try {
+            const payload = {
+                ticker: form.ticker.toUpperCase(),
+                qty: Number(form.qty),
+                avg_price: Number(form.avgPrice),
+            };
+
+            const res = await axios.post('http://localhost:5000/add-stock', payload);
+            setRows([...rows, res.data.item]);
+            setForm({ ticker: '', qty: '', avgPrice: '' });
+            onClose();
+        } catch (err) {
+            console.error(err);
+        } finally {
+            setLoading(false);
+        }
+    };
+
     return <Drawer.Root
         open={isOpen}
         onOpenChange={(open) => setIsOpen(open)}
@@ -22,7 +46,7 @@ const AddNewStockDrawer = () => {
         <Drawer.Content bg="gray.800" color="white">
             <Drawer.Header>
                 <Drawer.Title color="white" fontSize="xl">
-                    Add New Stock
+                    {isEdit ? "Edit Stock" : "Add Stock"}
                 </Drawer.Title>
             </Drawer.Header>
             <Drawer.Body>
@@ -38,6 +62,7 @@ const AddNewStockDrawer = () => {
                             border="1px solid"
                             borderColor="gray.600"
                             color="white"
+                            disabled={isEdit}
                             _placeholder={{ color: "gray.400" }}
                             _focus={{
                                 borderColor: "blue.500",
@@ -106,7 +131,6 @@ const AddNewStockDrawer = () => {
                     <Button
                         colorScheme="blue"
                         onClick={handleSave}
-                        loading={loading}
                         flex={1}
                         bg="blue.600"
                         _hover={{ bg: "blue.500" }}
@@ -120,5 +144,5 @@ const AddNewStockDrawer = () => {
     </Drawer.Root >
 };
 
-export default AddNewStockDrawer;
+export default StockAddEditForm;
 

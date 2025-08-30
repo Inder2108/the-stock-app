@@ -15,7 +15,7 @@ import {
   defaultConfig
 } from "@chakra-ui/react";
 import axios from 'axios';
-import AddNewStockDrawer from './components/AddNewStockDrawer';
+import StockAddEditForm from './components/StockAddEditForm';
 import StockTable from './components/StockTable';
 
 // Create system for Chakra v3 with dark theme configuration
@@ -63,6 +63,7 @@ function App() {
 
         // Last row with combined stats
         res.data.push({
+          isLastRow: true,
           ticker: "Total",
           current_price: overallInvested,
           profit_loss: overallProfitLoss,
@@ -77,30 +78,6 @@ function App() {
 
     fetchData();
   }, []);
-
-  const handleSave = async () => {
-    if (!form.ticker || !form.qty || !form.avgPrice) {
-      return;
-    }
-
-    setLoading(true);
-    try {
-      const payload = {
-        ticker: form.ticker.toUpperCase(),
-        qty: Number(form.qty),
-        avg_price: Number(form.avgPrice),
-      };
-
-      const res = await axios.post('http://localhost:5000/add-stock', payload);
-      setRows([...rows, res.data.item]);
-      setForm({ ticker: '', qty: '', avgPrice: '' });
-      onClose();
-    } catch (err) {
-      console.error(err);
-    } finally {
-      setLoading(false);
-    }
-  };
 
   return (
     <ChakraProvider value={system}>
@@ -125,7 +102,7 @@ function App() {
           </Button>
         </Flex>
         <StockTable />
-        {/* <AddNewStockDrawer /> */}
+        <StockAddEditForm />
       </Box>
     </ChakraProvider>
   );
