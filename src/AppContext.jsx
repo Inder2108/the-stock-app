@@ -8,9 +8,11 @@ export const AppContextProvider = ({ children }) => {
     const [loading, setLoading] = useState(false);
     const [isOpen, setIsOpen] = useState(false);
     const [isEdit, setIsEdit] = useState(false);
+    const [sortBy, setSortBy] = useState("weightage");
+    const [sortDirection, setSortDirection] = useState("ASC");
 
     return (
-        <AppContext.Provider value={{ rows, form, loading, isOpen, isEdit, setRows, setForm, setLoading, setIsOpen, setIsEdit }}>
+        <AppContext.Provider value={{ rows, form, loading, isOpen, isEdit, sortBy, sortDirection, setRows, setForm, setLoading, setIsOpen, setIsEdit, setSortBy, setSortDirection }}>
             {children}
         </AppContext.Provider>
     );

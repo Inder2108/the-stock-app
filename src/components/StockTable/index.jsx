@@ -2,6 +2,7 @@ import { Button, Table, Text } from "@chakra-ui/react";
 import React, { useContext } from "react";
 import { AppContext } from "../../AppContext";
 import EMAIndicator from "../EMAIndicator/EMAIndicator";
+import ColumnSortIcon from "./ColumnSortIcon";
 
 const numberRender = (num, isNonCurrency, isPercent) => {
     const returnNum = isNonCurrency ? (num ? num.toFixed(2) : "") : (num ? num.toLocaleString('en-IN', {
@@ -13,7 +14,7 @@ const numberRender = (num, isNonCurrency, isPercent) => {
 }
 
 const StockTable = ({ }) => {
-    const { rows = [] } = useContext(AppContext);
+    const { rows = [], sortBy, sortDirection, setSortBy, setSortDirection } = useContext(AppContext);
 
     const onAdd = () => {
 
@@ -22,6 +23,8 @@ const StockTable = ({ }) => {
     const onRemove = () => {
 
     };
+
+    const sortedRows = rows.sort((a, b) => sortDirection === "ASC" ? a[sortBy] - b[sortBy] : b[sortBy] - a[sortBy]);
 
     return <Table.Root
         size="lg"
@@ -37,22 +40,22 @@ const StockTable = ({ }) => {
                     Price
                 </Table.ColumnHeader>
                 <Table.ColumnHeader color="gray.100" fontWeight="semibold">
-                    PE
+                    PE <ColumnSortIcon sortBy={"pe_ratio"} sortDirection={sortDirection} setSortBy={setSortBy} setSortDirection={setSortDirection} />
                 </Table.ColumnHeader>
                 <Table.ColumnHeader color="gray.100" fontWeight="semibold">
-                    Weightage
+                    Weightage <ColumnSortIcon sortBy={"weightage"} sortDirection={sortDirection} setSortBy={setSortBy} setSortDirection={setSortDirection} />
                 </Table.ColumnHeader>
                 <Table.ColumnHeader color="gray.100" fontWeight="semibold">
-                    Current Weightage
+                    Current Weightage <ColumnSortIcon sortBy={"current_weightage"} sortDirection={sortDirection} setSortBy={setSortBy} setSortDirection={setSortDirection} />
                 </Table.ColumnHeader>
                 <Table.ColumnHeader color="gray.100" fontWeight="semibold">
-                    Invested
+                    Invested <ColumnSortIcon sortBy={"invested"} sortDirection={sortDirection} setSortBy={setSortBy} setSortDirection={setSortDirection} />
                 </Table.ColumnHeader>
                 <Table.ColumnHeader color="gray.100" fontWeight="semibold">
-                    Profit/Loss
+                    Profit/Loss <ColumnSortIcon sortBy={"profit_loss"} sortDirection={sortDirection} setSortBy={setSortBy} setSortDirection={setSortDirection} />
                 </Table.ColumnHeader>
                 <Table.ColumnHeader color="gray.100" fontWeight="semibold">
-                    Profit/Loss(%)
+                    Profit/Loss(%) <ColumnSortIcon sortBy={"profit_loss_percent"} sortDirection={sortDirection} setSortBy={setSortBy} setSortDirection={setSortDirection} />
                 </Table.ColumnHeader>
                 <Table.ColumnHeader color="gray.100" fontWeight="semibold">
                     EMA Indicators
@@ -63,7 +66,7 @@ const StockTable = ({ }) => {
             </Table.Row>
         </Table.Header>
         <Table.Body>
-            {(rows || []).length === 0 ? (
+            {(sortedRows || []).length === 0 ? (
                 <Table.Row>
                     <Table.Cell colSpan={4}>
                         <Text
@@ -77,7 +80,7 @@ const StockTable = ({ }) => {
                     </Table.Cell>
                 </Table.Row>
             ) : (
-                (rows || []).map((row, idx) => (
+                (sortedRows || []).map((row, idx) => (
                     <Table.Row
                         key={idx}
                         _hover={{ bg: "gray.700" }}
@@ -112,13 +115,13 @@ const StockTable = ({ }) => {
                             {!row.isLastRow && <EMAIndicator ema10={row.ema_10w} ema20={row.ema_20w} ema40={row.ema_40w} currentPrice={row.current_price} />}
                         </Table.Cell>
                         <Table.Cell color="gray.200">
-                            {!row.isLastRow && <div><i onCLick={() => {
+                            {!row.isLastRow && <div><i onClick={() => {
 
                             }} class="bi bi-plus-circle" style={{ color: "green", cursor: "pointer", fontSize: "1.5rem" }}></i>
-                                <i onCLick={() => {
+                                <i onClick={() => {
 
                                 }} class="bi bi-dash-circle" style={{ color: "gray", cursor: "pointer", fontSize: "1.5rem", paddingLeft: "5px" }}></i>
-                                <i onCLick={() => {
+                                <i onClick={() => {
 
                                 }} class="bi bi-x-circle" style={{ color: "red", cursor: "pointer", fontSize: "1.5rem", paddingLeft: "5px" }}></i></div>
                             }
