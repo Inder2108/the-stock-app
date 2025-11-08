@@ -38,7 +38,7 @@ function App() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const res = await axios.get('http://localhost:5000/stocks');
+        const res = await axios.get('http://localhost:3001/stocks');
         let sum = 0;
         res.data.map(stock => stock.avg_price * stock.qty).forEach(invested => {
           sum += invested;
@@ -65,7 +65,7 @@ function App() {
         res.data.push({
           isLastRow: true,
           ticker: "Total",
-          current_price: overallInvested,
+          invested: overallInvested,
           profit_loss: overallProfitLoss,
           profit_loss_percent: (overallProfitLoss / overallInvested) * 100
         })
@@ -102,7 +102,9 @@ function App() {
           </Button>
         </Flex>
         <StockTable />
-        <StockAddEditForm />
+        <div style={{ position: "absolute", top: 0, right: 0, height: "100%" }}>
+          <StockAddEditForm />
+        </div>
       </Box>
     </ChakraProvider>
   );

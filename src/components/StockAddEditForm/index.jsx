@@ -1,6 +1,7 @@
 import { Button, Drawer, Field, Flex, Input, VStack } from "@chakra-ui/react";
 import React, { useContext } from "react";
 import { AppContext } from "../../AppContext";
+import axios from "axios";
 
 const StockAddEditForm = () => {
     const { isOpen, isEdit, form, setForm, setIsOpen } = useContext(AppContext);
@@ -32,15 +33,12 @@ const StockAddEditForm = () => {
             onClose();
         } catch (err) {
             console.error(err);
-        } finally {
-            setLoading(false);
         }
     };
 
     return <Drawer.Root
         open={isOpen}
         onOpenChange={(open) => setIsOpen(open)}
-        placement="right"
     >
         <Drawer.Backdrop bg="blackAlpha.600" />
         <Drawer.Content bg="gray.800" color="white">

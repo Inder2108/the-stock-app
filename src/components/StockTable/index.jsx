@@ -5,7 +5,7 @@ import EMAIndicator from "../EMAIndicator/EMAIndicator";
 import ColumnSortIcon from "./ColumnSortIcon";
 
 const numberRender = (num, isNonCurrency, isPercent) => {
-    const returnNum = isNonCurrency ? (num ? num.toFixed(2) : "") : (num ? num.toLocaleString('en-IN', {
+    const returnNum = isNonCurrency ? (num ? num?.toFixed?.(2) : "") : (num ? num?.toLocaleString?.('en-IN', {
         maximumFractionDigits: 2,
         style: 'currency',
         currency: 'INR'
@@ -14,10 +14,10 @@ const numberRender = (num, isNonCurrency, isPercent) => {
 }
 
 const StockTable = ({ }) => {
-    const { rows = [], sortBy, sortDirection, setSortBy, setSortDirection } = useContext(AppContext);
+    const { rows = [], sortBy, sortDirection, setSortBy, setSortDirection, setIsOpen } = useContext(AppContext);
 
     const onAdd = () => {
-
+        if (typeof setIsOpen === "function") setIsOpen(true);
     };
 
     const onRemove = () => {
@@ -37,7 +37,13 @@ const StockTable = ({ }) => {
                     Ticker
                 </Table.ColumnHeader>
                 <Table.ColumnHeader color="gray.100" fontWeight="semibold">
-                    Price
+                    Invested <ColumnSortIcon sortBy={"invested"} sortDirection={sortDirection} setSortBy={setSortBy} setSortDirection={setSortDirection} />
+                </Table.ColumnHeader>
+                <Table.ColumnHeader color="gray.100" fontWeight="semibold">
+                    Profit/Loss <ColumnSortIcon sortBy={"profit_loss"} sortDirection={sortDirection} setSortBy={setSortBy} setSortDirection={setSortDirection} />
+                </Table.ColumnHeader>
+                <Table.ColumnHeader color="gray.100" fontWeight="semibold">
+                    Profit/Loss(%) <ColumnSortIcon sortBy={"profit_loss_percent"} sortDirection={sortDirection} setSortBy={setSortBy} setSortDirection={setSortDirection} />
                 </Table.ColumnHeader>
                 <Table.ColumnHeader color="gray.100" fontWeight="semibold">
                     PE <ColumnSortIcon sortBy={"pe_ratio"} sortDirection={sortDirection} setSortBy={setSortBy} setSortDirection={setSortDirection} />
@@ -49,17 +55,11 @@ const StockTable = ({ }) => {
                     Current Weightage <ColumnSortIcon sortBy={"current_weightage"} sortDirection={sortDirection} setSortBy={setSortBy} setSortDirection={setSortDirection} />
                 </Table.ColumnHeader>
                 <Table.ColumnHeader color="gray.100" fontWeight="semibold">
-                    Invested <ColumnSortIcon sortBy={"invested"} sortDirection={sortDirection} setSortBy={setSortBy} setSortDirection={setSortDirection} />
+                    Price
                 </Table.ColumnHeader>
-                <Table.ColumnHeader color="gray.100" fontWeight="semibold">
-                    Profit/Loss <ColumnSortIcon sortBy={"profit_loss"} sortDirection={sortDirection} setSortBy={setSortBy} setSortDirection={setSortDirection} />
-                </Table.ColumnHeader>
-                <Table.ColumnHeader color="gray.100" fontWeight="semibold">
-                    Profit/Loss(%) <ColumnSortIcon sortBy={"profit_loss_percent"} sortDirection={sortDirection} setSortBy={setSortBy} setSortDirection={setSortDirection} />
-                </Table.ColumnHeader>
-                <Table.ColumnHeader color="gray.100" fontWeight="semibold">
+                {/* <Table.ColumnHeader color="gray.100" fontWeight="semibold">
                     EMA Indicators
-                </Table.ColumnHeader>
+                </Table.ColumnHeader> */}
                 <Table.ColumnHeader color="gray.100" fontWeight="semibold">
                     Actions
                 </Table.ColumnHeader>
@@ -91,7 +91,13 @@ const StockTable = ({ }) => {
                             {row.ticker}
                         </Table.Cell>
                         <Table.Cell color="gray.300">
-                            {numberRender(row.current_price)}
+                            {numberRender(row.invested)}
+                        </Table.Cell>
+                        <Table.Cell color={row.profit_loss && row.profit_loss > 0 ? "green.400" : "red.400"}>
+                            {numberRender(row.profit_loss)}
+                        </Table.Cell>
+                        <Table.Cell color={row.profit_loss && row.profit_loss > 0 ? "green.400" : "red.400"}>
+                            {numberRender(row.profit_loss_percent, true, true)}
                         </Table.Cell>
                         <Table.Cell color="gray.200">
                             {numberRender(row.pe_ratio, true)}
@@ -103,27 +109,17 @@ const StockTable = ({ }) => {
                             {numberRender(row.current_weightage, true, true)}
                         </Table.Cell>
                         <Table.Cell color="gray.300">
-                            {numberRender(row.invested)}
+                            {numberRender(row.current_price)}
                         </Table.Cell>
-                        <Table.Cell color={row.profit_loss && row.profit_loss > 0 ? "green.400" : "red.400"}>
-                            {numberRender(row.profit_loss)}
-                        </Table.Cell>
-                        <Table.Cell color={row.profit_loss && row.profit_loss > 0 ? "green.400" : "red.400"}>
-                            {numberRender(row.profit_loss_percent, true, true)}
-                        </Table.Cell>
-                        <Table.Cell color="gray.300">
+                        {/* <Table.Cell color="gray.300">
                             {!row.isLastRow && <EMAIndicator ema10={row.ema_10w} ema20={row.ema_20w} ema40={row.ema_40w} currentPrice={row.current_price} />}
-                        </Table.Cell>
+                        </Table.Cell> */}
                         <Table.Cell color="gray.200">
-                            {!row.isLastRow && <div><i onClick={() => {
-
-                            }} class="bi bi-plus-circle" style={{ color: "green", cursor: "pointer", fontSize: "1.5rem" }}></i>
-                                <i onClick={() => {
-
-                                }} class="bi bi-dash-circle" style={{ color: "gray", cursor: "pointer", fontSize: "1.5rem", paddingLeft: "5px" }}></i>
-                                <i onClick={() => {
-
-                                }} class="bi bi-x-circle" style={{ color: "red", cursor: "pointer", fontSize: "1.5rem", paddingLeft: "5px" }}></i></div>
+                            {!row.isLastRow && <div>
+                                <i onClick={onAdd} className="bi bi-plus-circle" style={{ color: "green", cursor: "pointer", fontSize: "1.5rem" }}></i>
+                                <i onClick={() => { }} className="bi bi-dash-circle" style={{ color: "gray", cursor: "pointer", fontSize: "1.5rem", paddingLeft: "5px" }}></i>
+                                <i onClick={() => { }} className="bi bi-x-circle" style={{ color: "red", cursor: "pointer", fontSize: "1.5rem", paddingLeft: "5px" }}></i>
+                            </div>
                             }
                         </Table.Cell>
                     </Table.Row>
